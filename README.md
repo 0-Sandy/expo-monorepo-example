@@ -158,3 +158,50 @@ _No ongoing issues, we are actively monitoring and fixing potential issues_
   with&nbsp;❤️&nbsp;&nbsp;<strong>byCedric</strong>
   <br />
 </div>
+
+## Add a Cool and Simple Localization System
+
+### Usage
+To set the locale, add the following lines in `_layout.tsx`:
+
+```tsx
+import Lang from '@acme/lang';
+import { getLocales } from 'expo-localization';
+
+Lang.setLocale(getLocales()[0].languageCode);
+```
+
+### Adding Translations
+- Add text translations in different languages inside `/packages/lang/src/lang.[language].[ts|tsx]`.
+- Use `.ts` for translations that do not include React components but can use TypeScript.
+- Use `.tsx` for translations that include HTML or React components.
+- Import the language file in `index.tsx` and include it in `loadTranslations`.
+
+#### Retrieving Translations
+- To get a localized text as a React component:
+
+  ```tsx
+  <Lang.getComponent textKey="[textKey]" />
+  ```
+  This supports embedded components within the text.
+
+- To get a simple localized text (plain string, no components):
+
+  ```tsx
+  Lang.get("[textKey]")
+  ```
+
+### Functions
+| Function | Description |
+|----------|-------------|
+| `get(key, options?)` | Returns a localized text string. |
+| `getComponent({ textKey, options? })` | Returns a localized text and renders HTML content as React components. |
+| `setLocale(locale?)` | Sets the locale. If no locale is provided, it remains unchanged. |
+| `getLocale()` | Retrieves the current locale. |
+
+### Linked Issue
+_None_
+
+### Additional Context
+Some tests need to be implemented in `/packages/lang/src/__tests__/Lang.test.tsx` to ensure correctness and coverage.
+

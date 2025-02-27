@@ -1,2 +1,2 @@
-export * from './Paragraph';
-export * from './Strong';
+export * from './Paragraph'
+export * from './Strong'

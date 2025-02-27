@@ -1,10 +1,10 @@
-import { cleanup, render, screen } from '@testing-library/react-native';
+import { cleanup, render, screen } from '@testing-library/react-native'
 
-import { Strong } from '../Strong';
+import { Strong } from '../Strong'
 
-afterEach(cleanup);
+afterEach(cleanup)
 
 it('renders textual children', () => {
-  render(<Strong>Textual content</Strong>);
-  expect(screen.getByText('Textual content')).toBeDefined();
-});
+ render(<Strong>Textual content</Strong>)
+ expect(screen.getByText('Textual content')).toBeDefined()
+})

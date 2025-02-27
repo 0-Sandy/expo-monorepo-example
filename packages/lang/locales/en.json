@@ -1,0 +1,20 @@
+{
+  "home": {
+    "title": "Welcome",
+    "introduction": "This text comes from i18next and is provided in english."
+  },
+  "feature-home": {
+    "title": "Page 2",
+    "introduction": "This text on page two.",
+    "welcome": "Hello from an <1>Expo monorepo</1>!"
+  },
+  "common": {
+    "currentLanguage": "The current language is \"{{lng}}\"",
+    "actions": {
+      "toggleToSpanish": "Spanish",
+      "toggleToEnglish": "English",
+      "goToPage2": "Open page 2"
+    },
+    "infoText": "<0><0>One </O><1>Two </1><2>Three </2><3>Four </3><4>Five</4></O>"
+  }
+}

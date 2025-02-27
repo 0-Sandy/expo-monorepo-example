@@ -1,12 +1,12 @@
 // Learn more https://docs.expo.dev/guides/monorepos
-const { getDefaultConfig } = require('expo/metro-config');
-const { FileStore } = require('metro-cache');
-const path = require('path');
+const { getDefaultConfig } = require('expo/metro-config')
+const { FileStore } = require('metro-cache')
+const path = require('path')
 
 // Create the default Expo config for Metro
 // This includes the automatic monorepo configuration for workspaces
 // See: https://docs.expo.dev/guides/monorepos/#automatic-configuration
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname)
 
 // You can configure it manually as well, the most important parts are:
 // const projectRoot = __dirname;
@@ -21,7 +21,7 @@ const config = getDefaultConfig(__dirname);
 
 // Use turborepo to restore the cache when possible
 config.cacheStores = [
-  new FileStore({ root: path.join(__dirname, 'node_modules', '.cache', 'metro') }),
-];
+ new FileStore({ root: path.join(__dirname, 'node_modules', '.cache', 'metro') })
+]
 
-module.exports = config;
+module.exports = config
