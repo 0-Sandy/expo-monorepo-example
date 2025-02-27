@@ -1,7 +1,11 @@
 {
   "home": {
-    "title": "Bienvenido",
-    "introduction": "Este texto proviene de i18next y está en español."
+    "title": "Inicio",
+    "description": "This text comes from i18next and is provided in english."
+  },
+  "explore": {
+    "title": "Explorar",
+    "description": "This text comes from i18next and is provided in english."
   },
   "feature-home": {
     "title": "Página 2",
@@ -9,12 +13,6 @@
     "welcome": "¡Hola desde un <1>monorepo de Expo</1>!"
   },
   "common": {
-    "currentLanguage": "El idioma actual es \"{{lng}}\"",
-    "actions": {
-      "toggleToSpanish": "Español",
-        "toggleToEnglish": "Inglés",
-        "goToPage2": "Abrir página 2"
-    },
-    "infoText": "<0><0>Uno </O><1>Dos </1><2>Tres </2><3>Cuatro </3><4>Cinco</4></O>"
+    "currentLanguage": "El idioma actual es \"{{lng}}\""
   }
 }

@@ -82,7 +82,7 @@ You can use any package manager with Expo. If you want to use bun, yarn, or pnpm
 - [`packages/eslint-config`](./packages/eslint-config) - Preconfigured ESLint configuration for each app or package.
 - [`packages/feature-home`](./packages/feature-home) - Shared React Native domain-logic for apps, using `lang`, `ui` and `eslint-config` packages.
 - [`packages/ui`](./packages/ui) - Shared React Native UI components for apps, using the `eslint-config` package.
-- [`packages/lang`](./packages/lang) - Localization system for apps, using the `i18n-js` and `expo-localization` package.
+- [`packages/lang`](./packages/lang) - Localization system for apps, using the `react-i18next` and `expo-localization` package.
 
 ## 👷 Workflows
 
@@ -149,59 +149,103 @@ If you want to maintain the keystore or certificates yourself, you have to [conf
 
 > It's highly recommended to keep keystores and certificates out of your repository to avoid security issues.
 
+## Localization System
+
+### Adding Translations
+Translations are stored in JSON files inside `/packages/lang/locales/[language].json`.
+
+Example translation file:
+```json
+{
+  "common": {
+    "hello": "Hello",
+    "currentLanguage": "The current language is \"{{lng}}\""
+  },
+  "home": {
+    "welcome": "Welcome"
+  },
+  "user": {
+    "profile": "Profile",
+    "ui": {
+      "greeting": "Hello, {{name}}"
+    }
+  }
+}
+```
+
+#### Accessing Translations
+- To access a specific key:
+  ```ts
+  t("home:welcome") // "Welcome"
+  t("user:profile") // "Profile"
+  ```
+- If the key is in `common`, no prefix is needed:
+  ```ts
+  t("hello") // "Hello"
+  ```
+- To interpolate variables in a translation:
+  ```ts
+  t("user:ui.greeting", { name: "John" }) // "Hello, John"
+  ```
+
+### Usage in React
+To get a translation as a React component:
+```tsx
+import { Trans } from "@repo/lang";
+<Trans i18nKey="home.welcome" />
+```
+
+To get a translated string:
+```tsx
+import { useTranslations } from "@repo/lang";
+const { t } = useTranslations();
+const text = t("home.welcome");
+```
+
+### Main Functions
+| Function | Description | Import |
+|---------|------------|--------|
+| `t(key, options?)` | Returns a translated string with optional interpolation. | `const { t } = useTranslations();` |
+| `Trans` | Component allowing translations with embedded elements. | `import { Trans } from "@repo/lang";` |
+| `useTranslations()` | Hook to access translation functions within a component. | `import { useTranslations } from "@repo/lang";` |
+
+### Full Example
+```tsx
+import { useTranslations, Trans } from "@repo/lang";
+
+const MyComponent = () => {
+  const { t, i18n } = useTranslations();
+  return (
+    <div>
+      <h1>{t("currentLanguage", { lng: i18n.language })}</h1>
+      <p><Trans i18nKey="home:welcome" /></p>
+    </div>
+  );
+};
+```
+This renders:
+```html
+<h1>The current language is "en"</h1>
+<p>Welcome</p>
+```
+
+<strong>For more information, check out [react-i18next documentation](https://react.i18next.com/).</strong>
+
+### Additional Context
+Some tests need to be implemented in `/packages/lang/src/__tests__/Lang.test.tsx` and `/packages/feature-home/src/__tests__/HomeMessage.test.tsx` to ensure correctness and coverage.
+
 ## ❌ Common issues
 
 _No ongoing issues, we are actively monitoring and fixing potential issues_
 
 <div align="center">
   <br />
-  with&nbsp;❤️&nbsp;&nbsp;<strong>byCedric</strong>
+  with ❤️
+  <br />
+  <strong>byCedric</strong>
+  <br />
+  and
+  <br />
+  <strong>0-Sandy</strong>
   <br />
 </div>
-
-## Add a Cool and Simple Localization System
-
-### Usage
-To set the locale, add the following lines in `_layout.tsx`:
-
-```tsx
-import Lang from '@acme/lang';
-import { getLocales } from 'expo-localization';
-
-Lang.setLocale(getLocales()[0].languageCode);
-```
-
-### Adding Translations
-- Add text translations in different languages inside `/packages/lang/src/lang.[language].[ts|tsx]`.
-- Use `.ts` for translations that do not include React components but can use TypeScript.
-- Use `.tsx` for translations that include HTML or React components.
-- Import the language file in `index.tsx` and include it in `loadTranslations`.
-
-#### Retrieving Translations
-- To get a localized text as a React component:
-
-  ```tsx
-  <Lang.getComponent textKey="[textKey]" />
-  ```
-  This supports embedded components within the text.
-
-- To get a simple localized text (plain string, no components):
-
-  ```tsx
-  Lang.get("[textKey]")
-  ```
-
-### Functions
-| Function | Description |
-|----------|-------------|
-| `get(key, options?)` | Returns a localized text string. |
-| `getComponent({ textKey, options? })` | Returns a localized text and renders HTML content as React components. |
-| `setLocale(locale?)` | Sets the locale. If no locale is provided, it remains unchanged. |
-| `getLocale()` | Retrieves the current locale. |
-
-### Linked Issue
-_None_
-
-### Additional Context
-Some tests need to be implemented in `/packages/lang/src/__tests__/Lang.test.tsx` to ensure correctness and coverage.
-
