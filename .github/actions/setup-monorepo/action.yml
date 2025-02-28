@@ -6,10 +6,6 @@ inputs:
     description: Version of Node to use
     default: 22.x
 
-  pnpm-version:
-    description: Version of pnpm to use
-    default: 10.x
-
   eas-version:
     description: Version of EAS CLI to use
     default: latest
