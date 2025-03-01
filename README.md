@@ -1,18 +1,18 @@
 <div align="center">
-  <h1>:zap::rocket: Expo monorepo Example</h1>
+  <h1>⚡🚀 Expo monorepo Example</h1>
   <p>Fast pnpm monorepo for cross-platform apps built with Expo</p>
 </div>
 
 <p align="center">
-  <a href="https://github.com/byCedric/expo-monorepo-example#-why-is-it-fast"><b>Why is it fast?</b></a>
+  <a href="https://github.com/0-Sandy/expo-monorepo-example#-why-is-it-fast"><b>Why is it fast?</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-how-to-use-it"><b>How to use it</b></a>
+  <a href="https://github.com/0-Sandy/expo-monorepo-example#-how-to-use-it"><b>How to use it</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-structure"><b>Structure</b></a>
+  <a href="https://github.com/0-Sandy/expo-monorepo-example#-workflows"><b>Workflows</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#-workflows"><b>Workflows</b></a>
+  <a href="https://github.com/0-Sandy/expo-monorepo-example#-localization-system"><b>Localization System</b></a>
   &ensp;&mdash;&ensp;
-  <a href="https://github.com/byCedric/expo-monorepo-example#%EF%B8%8F-caveats"><b>Caveats & Issues</b></a>
+  <a href="https://github.com/0-Sandy/expo-monorepo-example#%EF%B8%8F-caveats"><b>Caveats & Issues</b></a>
 </p>
 
 <br />
@@ -89,67 +89,13 @@ You can use any package manager with Expo. If you want to use bun, yarn, or pnpm
 - [`build`](./.github/workflows/build.yml) - Starts the EAS builds for **apps/example** using the given profile.
 - [`deploy`](./.github/workflows/deploy.yml) - Deploys apps to a preview URL or production URL using [EAS Hosting](https://docs.expo.dev/eas/hosting/introduction/).
 - [`preview`](./.github/workflows/preview.yml) - Publishes apps to a PR-specific release channel and adds a QR code to that PR.
-- [`test`](./.github/workflows/test.yml) - Ensures that the apps and packages are healthy on multiple OSs.
+- [`test`](./.gi:globe_with_meridians:thub/workflows/test.yml) - Ensures that the apps and packages are healthy on multiple OSs.
 
 ### Composite workflows
 
 - [`setup-monorepo`](./.github/actions/setup-monorepo/action.yml) - Reusable composite workflow to setup the monorepo in GitHub Actions.
 
-## ⚠️ Caveats
-
-### Installing multiple React Native versions
-
-React Native is a complex library, split over multiple different packages. Unfortunately, React Native only supports a single version per monorepo. When using multiple different versions, things might break in unexpected ways without proper error reporting.
-
-You can check if your monorepo is installing multiple versions of React Native with the `npm list` command, supported by all major package managers:
-
-```bash
-$ npm why react-native
-$ yarn why react-native
-
-# Bun doesn't have `bun why` (yet), but you can use `yarn why` instead
-$ bun install --yarn && yarn why react-native
-
-# pnpm needs `--recursive` to search in all workspaces within the monorepo
-$ pnpm why --recursive react-native
-```
-
-If you are using multiple versions, try to update all **package.json** files, or use an [`overrides`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides)/[`resolutions`](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in the root **package.json** to force only one React Native version.
-
-### Using environment variables in React Native
-
-Reusing Metro caches can be dangerous if you use Babel plugins like [transform-inline-environment-variables](https://babeljs.io/docs/en/babel-plugin-transform-inline-environment-variables/). When using Babel plugins to swap out environment variables for their actual value, you are creating a dependency on environment variables. Because Metro is unaware of dependencies on environment variables, Metro might reuse an incorrect cached environment variable.
-
-Since Turborepo handles the cache in this repository, you could leverage [caching based on environment variables](https://turbo.build/repo/docs/core-concepts/caching#altering-caching-based-on-environment-variables). This invalidates the Metro cache whenever certain environment variables are changed and avoid reusing incorrect cached code.
-
-> [!TIP]
-> In this repository we rely on [Expo's built-in environment variables support](https://docs.expo.dev/guides/environment-variables/) to avoid Babel caching related issues with Metro.
-
-### pnpm workarounds
-
-In the current React Native ecosystem, there are a lot of implicit dependencies. These can be from the native code that is shipped within packages, or even implicit dependencies through installing a specific version of Expo or React Native. In the newer package managers like pnpm, you will run into issues due to these implicit dependencies.
-
-To workaround these issues, we changed the following:
-
-1. Let pnpm generate a flat **node_modules** folder, without fully isolating all modules. You can do that by creating a root [**.npmrc**](./.npmrc) file containing ([`node-linker=hoisted`](https://pnpm.io/npmrc#node-linker)). This works around the issue where Expo and React Native doesn't always have correct dependency chains towards consumed libraries. Expo is actively working on removing the last few remaining issues to fully enable isolated modules, see the [internal dependency validation check](https://github.com/expo/expo/blob/main/tools/src/check-packages/checkDependenciesAsync.ts#L28).
-
-2. Customize the **metro.config.js** configuration for usage in this monorepo. Full explanation per configuration option can be found in the [**metro.config.js**](./apps/example/metro.config.js) itself. The only addition in this repository is the [`config.cacheStores`](./apps/example/metro.config.js#L22-L25). This change moves the Metro cache to a place which is accessible by Turborepo, our main cache handler (see [Why is it fast?](#-why-is-it-fast)).
-
-### Precompile packages
-
-EAS only sends the files which are committed to the repository. That means [the `packages/*/build` folders](.gitignore#L3) need to be generated before building our apps. To tell EAS how to compile our packages, we can [use the `postinstall` hook](https://docs.expo.dev/build-reference/build-with-monorepos/).
-
-### Running EAS from apps directories
-
-As of writing, the `eas build` or `eas deploy` commands need to be executed from the package folder itself. EAS will still create a tarball with all files from your monorepo, but runs the build commands from this local folder. You can see this happening in the [build workflow](./.github/workflows/build.yml#L32).
-
-### Using local credentials in CI
-
-If you want to maintain the keystore or certificates yourself, you have to [configure EAS with local credentials](https://docs.expo.dev/app-signing/local-credentials/#credentialsjson). When your CI provider doesn't allow you to add "secret files", you can [encode these files to base64 strings](https://docs.expo.dev/app-signing/local-credentials/#using-local-credentials-on-builds-triggered-from) and decode whenever you need it.
-
-> It's highly recommended to keep keystores and certificates out of your repository to avoid security issues.
-
-## Localization System
+## 🌐 Localization System
 
 ### Adding Translations
 Translations are stored in JSON files inside `/packages/lang/locales/[language].json`.
@@ -233,6 +179,60 @@ This renders:
 
 ### Additional Context
 Some tests need to be implemented in `/packages/lang/src/__tests__/Lang.test.tsx` and `/packages/feature-home/src/__tests__/HomeMessage.test.tsx` to ensure correctness and coverage.
+
+## ⚠️ Caveats
+
+### Installing multiple React Native versions
+
+React Native is a complex library, split over multiple different packages. Unfortunately, React Native only supports a single version per monorepo. When using multiple different versions, things might break in unexpected ways without proper error reporting.
+
+You can check if your monorepo is installing multiple versions of React Native with the `npm list` command, supported by all major package managers:
+
+```bash
+$ npm why react-native
+$ yarn why react-native
+
+# Bun doesn't have `bun why` (yet), but you can use `yarn why` instead
+$ bun install --yarn && yarn why react-native
+
+# pnpm needs `--recursive` to search in all workspaces within the monorepo
+$ pnpm why --recursive react-native
+```
+
+If you are using multiple versions, try to update all **package.json** files, or use an [`overrides`](https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides)/[`resolutions`](https://classic.yarnpkg.com/lang/en/docs/selective-version-resolutions/) in the root **package.json** to force only one React Native version.
+
+### Using environment variables in React Native
+
+Reusing Metro caches can be dangerous if you use Babel plugins like [transform-inline-environment-variables](https://babeljs.io/docs/en/babel-plugin-transform-inline-environment-variables/). When using Babel plugins to swap out environment variables for their actual value, you are creating a dependency on environment variables. Because Metro is unaware of dependencies on environment variables, Metro might reuse an incorrect cached environment variable.
+
+Since Turborepo handles the cache in this repository, you could leverage [caching based on environment variables](https://turbo.build/repo/docs/core-concepts/caching#altering-caching-based-on-environment-variables). This invalidates the Metro cache whenever certain environment variables are changed and avoid reusing incorrect cached code.
+
+> [!TIP]
+> In this repository we rely on [Expo's built-in environment variables support](https://docs.expo.dev/guides/environment-variables/) to avoid Babel caching related issues with Metro.
+
+### pnpm workarounds
+
+In the current React Native ecosystem, there are a lot of implicit dependencies. These can be from the native code that is shipped within packages, or even implicit dependencies through installing a specific version of Expo or React Native. In the newer package managers like pnpm, you will run into issues due to these implicit dependencies.
+
+To workaround these issues, we changed the following:
+
+1. Let pnpm generate a flat **node_modules** folder, without fully isolating all modules. You can do that by creating a root [**.npmrc**](./.npmrc) file containing ([`node-linker=hoisted`](https://pnpm.io/npmrc#node-linker)). This works around the issue where Expo and React Native doesn't always have correct dependency chains towards consumed libraries. Expo is actively working on removing the last few remaining issues to fully enable isolated modules, see the [internal dependency validation check](https://github.com/expo/expo/blob/main/tools/src/check-packages/checkDependenciesAsync.ts#L28).
+
+2. Customize the **metro.config.js** configuration for usage in this monorepo. Full explanation per configuration option can be found in the [**metro.config.js**](./apps/example/metro.config.js) itself. The only addition in this repository is the [`config.cacheStores`](./apps/example/metro.config.js#L22-L25). This change moves the Metro cache to a place which is accessible by Turborepo, our main cache handler (see [Why is it fast?](#-why-is-it-fast)).
+
+### Precompile packages
+
+EAS only sends the files which are committed to the repository. That means [the `packages/*/build` folders](.gitignore#L3) need to be generated before building our apps. To tell EAS how to compile our packages, we can [use the `postinstall` hook](https://docs.expo.dev/build-reference/build-with-monorepos/).
+
+### Running EAS from apps directories
+
+As of writing, the `eas build` or `eas deploy` commands need to be executed from the package folder itself. EAS will still create a tarball with all files from your monorepo, but runs the build commands from this local folder. You can see this happening in the [build workflow](./.github/workflows/build.yml#L32).
+
+### Using local credentials in CI
+
+If you want to maintain the keystore or certificates yourself, you have to [configure EAS with local credentials](https://docs.expo.dev/app-signing/local-credentials/#credentialsjson). When your CI provider doesn't allow you to add "secret files", you can [encode these files to base64 strings](https://docs.expo.dev/app-signing/local-credentials/#using-local-credentials-on-builds-triggered-from) and decode whenever you need it.
+
+> It's highly recommended to keep keystores and certificates out of your repository to avoid security issues.
 
 ## ❌ Common issues
 
