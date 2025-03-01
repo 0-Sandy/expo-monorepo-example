@@ -3,6 +3,7 @@ import { useTranslation } from '@repo/lang'
 import Head from 'expo-router/head'
 import { Image, StyleSheet, Platform, Text } from 'react-native'
 
+import { HelloWave } from '@/components/HelloWave'
 import ParallaxScrollView from '@/components/ParallaxScrollView'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
@@ -25,9 +26,10 @@ export default function HomeScreen() {
      <ThemedText>
       <HomeMessage />
       <Text>{t('currentLanguage', { lng: i18n.language })}</Text>
+      <HomeMessageIcon />
      </ThemedText>
      <ThemedText>
-      <HomeMessageIcon />
+      <HelloWave />
      </ThemedText>
     </ThemedView>
     <ThemedView style={styles.stepContainer}>
