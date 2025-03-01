@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Expo monorepo</h1>
+  <h1>:zap::rocket: Expo monorepo Example</h1>
   <p>Fast pnpm monorepo for cross-platform apps built with Expo</p>
 </div>
 
